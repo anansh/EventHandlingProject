@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import javax.transaction.Transactional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ import com.sourcebits.eventHandling.repository.EventRepository;
 import com.sourcebits.eventHandling.request.EventEmployeeRequest;
 import com.sourcebits.eventHandling.request.EventInvitationRequest;
 import com.sourcebits.eventHandling.request.EventInvitationUpdateReq;
+import com.sourcebits.eventHandling.response.EventResponse;
 
 @Service
 public class EventServiceImpl implements EventService {
@@ -60,6 +62,18 @@ public class EventServiceImpl implements EventService {
 		eventInvitation.setPropositions(eventInvitationUpdateReq.getPropositions());
 		eventInvitationRepository.save(eventInvitation);
 		return null;
+	}
+
+	@Override
+	public List<EventResponse> findListOfEvents() {
+		List<Event> eventList = eventRepository.findAllByDate();
+		List<EventResponse> listEventResponses = new ArrayList<>();
+		for (Event event : eventList) {
+			EventResponse eventResponse = new EventResponse();
+			BeanUtils.copyProperties(event, eventResponse);
+			listEventResponses.add(eventResponse);
+		}
+		return listEventResponses;
 	}
 
 }

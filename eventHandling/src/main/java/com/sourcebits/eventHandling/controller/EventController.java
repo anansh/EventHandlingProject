@@ -13,6 +13,7 @@ import com.sourcebits.eventHandling.model.Event;
 import com.sourcebits.eventHandling.request.EventInvitationRequest;
 import com.sourcebits.eventHandling.request.EventInvitationUpdateReq;
 import com.sourcebits.eventHandling.request.GooglePlacesRequest;
+import com.sourcebits.eventHandling.response.ListEventResponse;
 import com.sourcebits.eventHandling.service.EventService;
 
 @RestController
@@ -23,7 +24,7 @@ public class EventController {
 	EventService eventService;
 
 	@PostMapping("/saveEvent")
-	public Event saveNewEvent(@RequestBody Event event) { 
+	public Event saveNewEvent(@RequestBody Event event) {
 		return eventService.addEvent(event);
 	}
 
@@ -31,6 +32,13 @@ public class EventController {
 	public String saveEventInvitation(@RequestBody EventInvitationRequest eventInvitationReq) {
 		eventService.saveInvitation(eventInvitationReq);
 		return "";
+	}
+
+	@GetMapping("/findEventList")
+	public ListEventResponse getListOfEvents() {
+		ListEventResponse listEventResponse = new ListEventResponse();
+		listEventResponse.setEventResponses(eventService.findListOfEvents());
+		return listEventResponse;
 	}
 
 	@GetMapping("/findEventPlaces")
