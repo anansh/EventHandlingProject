@@ -65,7 +65,7 @@ public class EventServiceImpl implements EventService {
 			eventInvitation2.setInvCreatedDate(new Date());
 			listOfInvitations.add(eventInvitation2);
 			Employees employees = employeeRepository.findById(eventInvitation2.getEmpId());
-			// sendMail(employees.getEmailId());
+			sendMail(employees.getEmailId());
 			sendMessage(employees.getMobileNo());
 		}
 		try {
@@ -143,7 +143,8 @@ public class EventServiceImpl implements EventService {
 		Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
 
 		com.twilio.rest.api.v2010.account.Message message = com.twilio.rest.api.v2010.account.Message
-				.creator(new PhoneNumber("+918920655154"), new PhoneNumber("+12055576301"), "Ahoy from Twilio!").create();
+				.creator(new PhoneNumber("+918920655154"), new PhoneNumber("+12055576301"), "Ahoy from Twilio!")
+				.create();
 
 		System.out.println(message.getSid());
 
