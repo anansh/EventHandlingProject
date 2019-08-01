@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sourcebits.eventHandling.constants.ConstantsMessages;
 import com.sourcebits.eventHandling.request.NewEmployeeRequest;
 import com.sourcebits.eventHandling.response.EmployeeResponse;
 import com.sourcebits.eventHandling.service.EmployeesService;
@@ -29,6 +30,6 @@ public class EmployeeController {
 	@PostMapping("/saveNewEmployee")
 	public String saveNewEmployee(@RequestBody NewEmployeeRequest newEmployeeRequest) {
 		employeesService.addEmployee(newEmployeeRequest);
-		return "";
+		return ConstantsMessages.SUCCESSSAVE;
 	}
 }

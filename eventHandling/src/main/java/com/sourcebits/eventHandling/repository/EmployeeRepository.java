@@ -4,9 +4,11 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import com.sourcebits.eventHandling.model.Employees;
 
+@Repository
 public interface EmployeeRepository extends JpaRepository<Employees, String> {
 
 	@Query(value = "SELECT * FROM employees where proj_id = :projId", nativeQuery = true)

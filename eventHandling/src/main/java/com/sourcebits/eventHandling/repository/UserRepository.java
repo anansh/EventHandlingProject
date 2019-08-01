@@ -3,9 +3,9 @@ package com.sourcebits.eventHandling.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.sourcebits.eventHandling.model.Project;
+import com.sourcebits.eventHandling.model.User;
 
 @Repository
-public interface ProjectRepository extends JpaRepository<Project, Integer> {
-	public Project findByProjId(Integer projId);
+public interface UserRepository extends JpaRepository<User, Integer> {
+	
 }

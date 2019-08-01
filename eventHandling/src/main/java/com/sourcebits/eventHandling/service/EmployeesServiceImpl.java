@@ -8,6 +8,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.sourcebits.eventHandling.constants.ConstantsMessages;
 import com.sourcebits.eventHandling.model.Employees;
 import com.sourcebits.eventHandling.model.Project;
 import com.sourcebits.eventHandling.repository.EmployeeRepository;
@@ -38,7 +39,7 @@ public class EmployeesServiceImpl implements EmployeesService {
 		employees.setEmpId("EMP-" + (lastId + 1));
 		employees.setEmpCreatedDate(new Date());
 		employeeRepository.save(employees);
-		return "";
+		return ConstantsMessages.SUCCESSSAVE;
 	}
 
 	@Override
