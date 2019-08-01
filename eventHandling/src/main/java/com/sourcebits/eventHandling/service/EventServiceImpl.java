@@ -137,16 +137,19 @@ public class EventServiceImpl implements EventService {
 
 	public void sendMessage(String to) {
 		// Find your Account Sid and Token at twilio.com/user/account
-		final String ACCOUNT_SID = "ACd17f1bdb20eecf98babc51026559a7c1";
-		final String AUTH_TOKEN = "d3ff39d7a5edfe48917a5001bae49b02";
-
-		Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
-
-		com.twilio.rest.api.v2010.account.Message message = com.twilio.rest.api.v2010.account.Message
-				.creator(new PhoneNumber("+918920655154"), new PhoneNumber("+12055576301"), "Sample text message")
-				.create();
-
-		System.out.println(message.getSid());
+		/*
+		 * final String ACCOUNT_SID = "ACd17f1bdb20eecf98babc51026559a7c1"; final String
+		 * AUTH_TOKEN = "d3ff39d7a5edfe48917a5001bae49b02";
+		 * 
+		 * Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+		 * 
+		 * com.twilio.rest.api.v2010.account.Message message =
+		 * com.twilio.rest.api.v2010.account.Message .creator(new
+		 * PhoneNumber("+918920655154"), new PhoneNumber("+12055576301"),
+		 * "Sample text message") .create();
+		 * 
+		 * System.out.println(message.getSid());
+		 */
 
 	}
 
