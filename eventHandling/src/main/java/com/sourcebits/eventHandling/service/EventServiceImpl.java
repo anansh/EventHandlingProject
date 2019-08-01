@@ -107,8 +107,8 @@ public class EventServiceImpl implements EventService {
 	public void sendMail(String to) {
 		String from = "anshuman.shrivastava@sourcebits.com";
 		String password = "1001013009";
-		String sub = "hello javatpoint";
-		String msg = "How r u?";
+		String sub = "This is subject";
+		String msg = "This is body";
 		Properties props = new Properties();
 		props.put("mail.smtp.host", "smtp.gmail.com");
 		props.put("mail.smtp.socketFactory.port", "465");
@@ -143,7 +143,7 @@ public class EventServiceImpl implements EventService {
 		Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
 
 		com.twilio.rest.api.v2010.account.Message message = com.twilio.rest.api.v2010.account.Message
-				.creator(new PhoneNumber("+918920655154"), new PhoneNumber("+12055576301"), "Ahoy from Twilio!")
+				.creator(new PhoneNumber("+918920655154"), new PhoneNumber("+12055576301"), "Sample text message")
 				.create();
 
 		System.out.println(message.getSid());
