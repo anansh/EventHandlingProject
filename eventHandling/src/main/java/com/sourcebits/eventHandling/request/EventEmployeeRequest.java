@@ -1,13 +1,14 @@
 package com.sourcebits.eventHandling.request;
 
 public class EventEmployeeRequest {
-	private String empId;
+	private Integer empId;
 
-	public String getEmpId() {
+	public Integer getEmpId() {
 		return empId;
 	}
 
-	public void setEmpId(String empId) {
+	public void setEmpId(Integer empId) {
 		this.empId = empId;
 	}
+
 }

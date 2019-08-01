@@ -8,5 +8,5 @@ import com.sourcebits.eventHandling.model.EventInvitation;
 @Repository
 public interface EventInvitationRepository extends JpaRepository<EventInvitation, String> {
 
-	public EventInvitation findByEventIdAndEmpId(String eventId, String empId);
+	public EventInvitation findByEventIdAndEmpId(int eventId, int empId);
 }

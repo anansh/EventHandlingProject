@@ -3,12 +3,8 @@ package com.sourcebits.eventHandling.request;
 import java.util.List;
 
 public class EventInvitationRequest {
-	private String eventId;
+	private int eventId;
 	private List<EventEmployeeRequest> eventEmployeesRequest;
-
-	public String getEventId() {
-		return eventId;
-	}
 
 	public List<EventEmployeeRequest> getEventEmployeesRequest() {
 		return eventEmployeesRequest;
@@ -18,7 +14,11 @@ public class EventInvitationRequest {
 		this.eventEmployeesRequest = eventEmployeesRequest;
 	}
 
-	public void setEventId(String eventId) {
+	public int getEventId() {
+		return eventId;
+	}
+
+	public void setEventId(int eventId) {
 		this.eventId = eventId;
 	}
 

@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -11,23 +13,57 @@ import javax.persistence.Table;
 @Table(name = "event")
 public class Event {
 	@Id
+	@Column(name = "id")
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private int id;
+
 	@Column(name = "event_id")
-	String eventId;
+	private String eventId;
 
 	@Column(name = "event_name")
-	String eventName;
+	private String eventName;
 
 	@Column(name = "event_venue_longitude")
-	String eventVenueLong;
+	private String eventVenueLong;
 
 	@Column(name = "event_venue_latitude")
-	String eventVenueLat;
+	private String eventVenueLat;
 
 	@Column(name = "event_date_time")
-	Date eventDateTime;
+	private Date eventDateTime;
 
 	@Column(name = "event_created_by")
-	String eventCreatedBy;
+	private String eventCreatedBy;
+
+	@Column(name = "event_created_date")
+	private Date eventCreatedDate;
+
+	@Column(name = "event_updated_by")
+	private String eventUpdatedBy;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public Date getEventCreatedDate() {
+		return eventCreatedDate;
+	}
+
+	public void setEventCreatedDate(Date eventCreatedDate) {
+		this.eventCreatedDate = eventCreatedDate;
+	}
+
+	public String getEventUpdatedBy() {
+		return eventUpdatedBy;
+	}
+
+	public void setEventUpdatedBy(String eventUpdatedBy) {
+		this.eventUpdatedBy = eventUpdatedBy;
+	}
 
 	public String getEventId() {
 		return eventId;

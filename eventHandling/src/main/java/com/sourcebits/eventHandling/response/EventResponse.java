@@ -3,18 +3,18 @@ package com.sourcebits.eventHandling.response;
 import java.util.Date;
 
 public class EventResponse {
-	private String eventId;
+	private int eventId;
 	private String eventName;
 	private String eventVenueLong;
 	private String eventVenueLat;
 	private Date eventDateTime;
 	private String eventCreatedBy;
 
-	public String getEventId() {
+	public int getEventId() {
 		return eventId;
 	}
 
-	public void setEventId(String eventId) {
+	public void setEventId(int eventId) {
 		this.eventId = eventId;
 	}
 

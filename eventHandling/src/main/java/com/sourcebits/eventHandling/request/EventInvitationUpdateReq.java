@@ -1,11 +1,19 @@
 package com.sourcebits.eventHandling.request;
 
 public class EventInvitationUpdateReq {
-	private String eventId;
-	private String empId;
+	private int eventId;
+	private int empId;
 	private boolean propositions;
 
-	public boolean getPropositions() {
+	public int getEventId() {
+		return eventId;
+	}
+
+	public void setEventId(int eventId) {
+		this.eventId = eventId;
+	}
+
+	public boolean isPropositions() {
 		return propositions;
 	}
 
@@ -13,19 +21,11 @@ public class EventInvitationUpdateReq {
 		this.propositions = propositions;
 	}
 
-	public String getEventId() {
-		return eventId;
-	}
-
-	public void setEventId(String eventId) {
-		this.eventId = eventId;
-	}
-
-	public String getEmpId() {
+	public int getEmpId() {
 		return empId;
 	}
 
-	public void setEmpId(String empId) {
+	public void setEmpId(int empId) {
 		this.empId = empId;
 	}
 

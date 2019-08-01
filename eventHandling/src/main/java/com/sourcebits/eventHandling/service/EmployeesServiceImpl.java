@@ -1,8 +1,10 @@
 package com.sourcebits.eventHandling.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +12,7 @@ import com.sourcebits.eventHandling.model.Employees;
 import com.sourcebits.eventHandling.model.Project;
 import com.sourcebits.eventHandling.repository.EmployeeRepository;
 import com.sourcebits.eventHandling.repository.ProjectRepository;
+import com.sourcebits.eventHandling.request.NewEmployeeRequest;
 import com.sourcebits.eventHandling.response.EmployeeResponse;
 import com.sourcebits.eventHandling.response.ProjectResponse;
 
@@ -23,9 +26,19 @@ public class EmployeesServiceImpl implements EmployeesService {
 	ProjectRepository projectRepository;
 
 	@Override
-	public void addEmployee(Employees employees) {
-		// TODO Auto-generated method stub
-
+	public String addEmployee(NewEmployeeRequest newEmployeeRequest) {
+		Employees employees = new Employees();
+		BeanUtils.copyProperties(newEmployeeRequest, employees);
+		employees.setProject(projectRepository.findByProjId(newEmployeeRequest.getProjectId()));
+		Employees employees1 = employeeRepository.getLastEmployee();
+		int lastId = 0;
+		if (null != employees1) {
+			lastId = employees1.getId();
+		}
+		employees.setEmpId("EMP-" + (lastId + 1));
+		employees.setEmpCreatedDate(new Date());
+		employeeRepository.save(employees);
+		return "";
 	}
 
 	@Override
