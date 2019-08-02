@@ -1,5 +1,9 @@
 package com.sourcebits.eventHandling.request;
 
+import java.util.Set;
+
+import com.sourcebits.eventHandling.model.Role;
+
 public class NewEmployeeRequest {
 
 	private String empName;
@@ -12,12 +16,22 @@ public class NewEmployeeRequest {
 
 	private String password;
 
+	private Set<Role> roles;
+
 	public String getPassword() {
 		return password;
 	}
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public Set<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
 	}
 
 	public String getEmpName() {

@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 import com.sourcebits.eventHandling.constants.ConstantsMessages;
 import com.sourcebits.eventHandling.model.Employees;
 import com.sourcebits.eventHandling.model.Project;
+import com.sourcebits.eventHandling.model.User;
 import com.sourcebits.eventHandling.repository.EmployeeRepository;
 import com.sourcebits.eventHandling.repository.ProjectRepository;
+import com.sourcebits.eventHandling.repository.UserRepository;
 import com.sourcebits.eventHandling.request.NewEmployeeRequest;
 import com.sourcebits.eventHandling.response.EmployeeResponse;
 import com.sourcebits.eventHandling.response.ProjectResponse;
@@ -25,6 +27,9 @@ public class EmployeesServiceImpl implements EmployeesService {
 
 	@Autowired
 	ProjectRepository projectRepository;
+
+	@Autowired
+	UserRepository userRepository;
 
 	@Override
 	public String addEmployee(NewEmployeeRequest newEmployeeRequest) {
@@ -39,6 +44,13 @@ public class EmployeesServiceImpl implements EmployeesService {
 		employees.setEmpId("EMP-" + (lastId + 1));
 		employees.setEmpCreatedDate(new Date());
 		employeeRepository.save(employees);
+		User user = new User();
+		user.setPassword(newEmployeeRequest.getPassword());
+		user.setEmp_id(employees.getId());
+		user.setUserCreatedBy(0);
+		user.setUserCreatedDate(new Date());
+		user.setRoles(newEmployeeRequest.getRoles());
+		userRepository.save(user);
 		return ConstantsMessages.SUCCESSSAVE;
 	}
 
