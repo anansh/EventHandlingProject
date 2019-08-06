@@ -11,6 +11,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.sourcebits.eventHandling.component.EmployeeAuthenticationSuccessHandler;
+
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -19,13 +21,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private UserDetailsService userDetailsService;
 
+	@Autowired
+	private EmployeeAuthenticationSuccessHandler successHandler;
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
-		http.authorizeRequests().antMatchers("/employee/**").authenticated().anyRequest().permitAll()
-				.antMatchers("/event/**").authenticated().anyRequest().permitAll().and().authorizeRequests()
-				.antMatchers("/secure/**").authenticated().anyRequest().hasAnyRole("Admin").and().formLogin().and()
-				.logout().logoutSuccessUrl("/login").permitAll().and().csrf().disable();
+		http.authorizeRequests().antMatchers("/employee/**","/loginSuccess/**").authenticated().antMatchers("/event/**").authenticated()
+				.anyRequest().permitAll().and().authorizeRequests().antMatchers("/secure/**").authenticated()
+				.anyRequest().hasAnyRole("Admin").and().formLogin().successHandler(successHandler).and().logout()
+				.logoutSuccessUrl("/login").permitAll().and().csrf().disable();
 
 	}
 

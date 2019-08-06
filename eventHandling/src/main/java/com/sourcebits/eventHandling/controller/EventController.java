@@ -1,5 +1,9 @@
 package com.sourcebits.eventHandling.controller;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,14 +28,14 @@ public class EventController {
 	EventService eventService;
 
 	@PostMapping("/saveEvent")
-	public Event saveNewEvent(@RequestBody Event event) {
-		return eventService.addEvent(event);
+	public Event saveNewEvent(@RequestBody Event event, HttpServletRequest request) {
+		return eventService.addEvent(event, request);
 	}
 
 	@PostMapping("/saveEventInvitation")
-	public String saveEventInvitation(@RequestBody EventInvitationRequest eventInvitationReq) {
-		eventService.saveInvitation(eventInvitationReq);
-		return "";
+	public String saveEventInvitation(@RequestBody EventInvitationRequest eventInvitationReq,
+			HttpServletRequest request) {
+		return eventService.saveInvitation(eventInvitationReq, request);
 	}
 
 	@GetMapping("/findEventList")
@@ -42,7 +46,10 @@ public class EventController {
 	}
 
 	@GetMapping("/findEventPlaces")
-	public String getNearByEventPlaces(@RequestBody GooglePlacesRequest googlePlacesRequest) {
+	@Transactional
+	public String getNearByEventPlaces(@RequestBody GooglePlacesRequest googlePlacesRequest,
+			HttpServletRequest request) {
+		// HttpSession httpSession = request.getSession();
 		RestTemplate restTemplate = new RestTemplate();
 		String object = restTemplate
 				.getForObject(
@@ -55,8 +62,9 @@ public class EventController {
 	}
 
 	@PutMapping("/updateEventInvitation")
-	public String updateEventInvitation(@RequestBody EventInvitationUpdateReq eventInvitationUpdateReq) {
-		eventService.updateInvitation(eventInvitationUpdateReq);
+	public String updateEventInvitation(@RequestBody EventInvitationUpdateReq eventInvitationUpdateReq,
+			HttpServletRequest request) {
+		eventService.updateInvitation(eventInvitationUpdateReq, request);
 		return "";
 	}
 }

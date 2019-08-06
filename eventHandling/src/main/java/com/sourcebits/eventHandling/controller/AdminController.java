@@ -1,5 +1,7 @@
 package com.sourcebits.eventHandling.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,9 +27,9 @@ public class AdminController {
 
 	@PostMapping("/admin/add")
 	@PreAuthorize("hasAnyRole('Admin')")
-	public String addUserByAdmin(@RequestBody NewEmployeeRequest newEmployeeRequest) {
+	public String addUserByAdmin(@RequestBody NewEmployeeRequest newEmployeeRequest, HttpServletRequest request) {
 		newEmployeeRequest.setPassword(encodePassword.encode(newEmployeeRequest.getPassword()));
-		employeesService.addEmployee(newEmployeeRequest);
+		employeesService.addEmployee(newEmployeeRequest,request);
 		return ConstantsMessages.SUCCESSSAVE;
 	}
 }

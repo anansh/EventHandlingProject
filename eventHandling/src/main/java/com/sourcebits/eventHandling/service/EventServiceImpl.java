@@ -1,28 +1,23 @@
 package com.sourcebits.eventHandling.service;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
 import javax.transaction.Transactional;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriBuilder;
 
-import org.glassfish.jersey.client.ClientConfig;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import javax.mail.*;
 import javax.mail.internet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.mail.Session;
 import javax.mail.Transport;
 import com.sourcebits.eventHandling.constants.ConstantsMessages;
@@ -53,7 +48,7 @@ public class EventServiceImpl implements EventService {
 
 	@Override
 	@Transactional
-	public Event addEvent(Event event) {
+	public Event addEvent(Event event, HttpServletRequest request) {
 		Event event2 = eventRepository.getLastEvent();
 		int lastId = 0;
 		if (null != event2) {
@@ -61,41 +56,61 @@ public class EventServiceImpl implements EventService {
 		}
 		event.setEventId("EVNT-" + (lastId + 1));
 		event.setEventCreatedDate(new Date());
+	//	HttpSession httpSession = request.getSession();
 		return eventRepository.save(event);
 	}
 
 	@Override
 	@Transactional
-	public String saveInvitation(EventInvitationRequest listEventInvitation) {
+	public String saveInvitation(EventInvitationRequest listEventInvitation, HttpServletRequest request) {
 		List<EventInvitation> listOfInvitations = new ArrayList<>();
-		ClientConfig config = new ClientConfig();
-		Client client = ClientBuilder.newClient(config);
-		WebTarget target = client.target(getBaseURI());
+		Event event = eventRepository.findById(listEventInvitation.getEventId());
+		String address = findAddress(event.getEventVenueLat(), event.getEventVenueLong());
+		System.out.println(address);
 
-		String jsonaddresss = target.request().accept(MediaType.APPLICATION_JSON).get(String.class);
-
-		String address = adres(jsonaddresss);
 		for (EventEmployeeRequest eventInvitation : listEventInvitation.getEventEmployeesRequest()) {
 			EventInvitation eventInvitation2 = new EventInvitation();
-			eventInvitation2.setEventId(eventRepository.findById(listEventInvitation.getEventId()).getId());
+			eventInvitation2.setEventId(event.getId());
 			eventInvitation2.setEmpId(eventInvitation.getEmpId());
 			eventInvitation2.setInvCreatedDate(new Date());
 			listOfInvitations.add(eventInvitation2);
 			Employees employees = employeeRepository.findById(eventInvitation2.getEmpId());
 			sendMail(employees.getEmailId(), address);
-			sendMessage(employees.getMobileNo());
+			// sendMessage(employees.getMobileNo());
 		}
 		try {
 			eventInvitationRepository.saveAll(listOfInvitations);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
+
 		return ConstantsMessages.SUCCESSSAVE;
+	}
+
+	public String findAddress(String lat, String lng) {
+		String object = "";
+		try {
+			RestTemplate restTemplate = new RestTemplate();
+			object = restTemplate.getForObject("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + ","
+					+ lng + "&key=AIzaSyAqnoH_s6etqy8140z3t7orPqNuymgJQfs", String.class);
+			System.out.println(object);
+			JSONObject jsonObject = new JSONObject(object);
+
+			if (jsonObject.has("result")) {
+				JSONArray activity = (JSONArray) jsonObject.get("result");
+				for (Object each : activity) {
+					System.out.println(each.toString());
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "address";
 	}
 
 	@Override
 	@Transactional
-	public String updateInvitation(EventInvitationUpdateReq eventInvitationUpdateReq) {
+	public String updateInvitation(EventInvitationUpdateReq eventInvitationUpdateReq, HttpServletRequest request) {
 		EventInvitation eventInvitation = eventInvitationRepository
 				.findByEventIdAndEmpId(eventInvitationUpdateReq.getEventId(), eventInvitationUpdateReq.getEmpId());
 		boolean data = eventInvitationUpdateReq.isPropositions();
@@ -165,34 +180,6 @@ public class EventServiceImpl implements EventService {
 
 		System.out.println(message.getSid());
 
-	}
-
-	private static URI getBaseURI() {
-		return UriBuilder.fromUri(
-				"https://maps.googleapis.com/maps/api/geocode/json?latlng=32.263200,50.778187&key=AIzaSyAqnoH_s6etqy8140z3t7orPqNuymgJQfs")
-				.build();
-	}
-
-	private static String adres(String jsonaddresss) {
-		try {
-			JSONParser parser = new JSONParser();
-
-			Object obj = parser.parse(jsonaddresss);
-			JSONObject jsonObject = (JSONObject) obj;
-
-			JSONArray msg = (JSONArray) jsonObject.get("results");
-
-			// System.out.println("Message"+msg.get(1)); //Get Second Line Of Result
-
-			JSONObject jobj = (JSONObject) parser.parse(msg.get(1).toString()); // Parsse it
-
-			String perfect_address = jobj.get("formatted_address").toString();
-
-			jsonaddresss = perfect_address;
-		} catch (Exception e) {
-			jsonaddresss = "Error In Address" + e;
-		}
-		return jsonaddresss;
 	}
 
 }
