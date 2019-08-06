@@ -21,10 +21,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable();
-		http.authorizeRequests().antMatchers("/employee/**").authenticated().anyRequest().permitAll().and()
-				.authorizeRequests().antMatchers("/secure/**").authenticated().anyRequest().hasAnyRole("Admin").and()
-				.formLogin().permitAll();
+
+		http.authorizeRequests().antMatchers("/employee/**").authenticated().anyRequest().permitAll()
+				.antMatchers("/event/**").authenticated().anyRequest().permitAll().and().authorizeRequests()
+				.antMatchers("/secure/**").authenticated().anyRequest().hasAnyRole("Admin").and().formLogin().and()
+				.logout().logoutSuccessUrl("/login").permitAll().and().csrf().disable();
+
 	}
 
 	@Override
@@ -36,4 +38,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	public BCryptPasswordEncoder encodePWD() {
 		return new BCryptPasswordEncoder();
 	}
+
 }

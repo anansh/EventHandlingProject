@@ -22,4 +22,15 @@ public class EmployeeController {
 	public List<EmployeeResponse> getEmployeesByDept(@RequestParam int projId) {
 		return employeesService.getEmployeesByProj(projId);
 	}
+
+	@GetMapping("/loginSuccess")
+	public String getLoginSuccess() {
+		return "login Success";
+	}
+
+	@GetMapping("/logoutSuccess")
+	public String getLogoutSuccess() {
+		return "logout Success";
+	}
+
 }

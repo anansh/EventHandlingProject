@@ -1,12 +1,22 @@
 package com.sourcebits.eventHandling.service;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
 import javax.transaction.Transactional;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriBuilder;
 
+import org.glassfish.jersey.client.ClientConfig;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,6 +68,13 @@ public class EventServiceImpl implements EventService {
 	@Transactional
 	public String saveInvitation(EventInvitationRequest listEventInvitation) {
 		List<EventInvitation> listOfInvitations = new ArrayList<>();
+		ClientConfig config = new ClientConfig();
+		Client client = ClientBuilder.newClient(config);
+		WebTarget target = client.target(getBaseURI());
+
+		String jsonaddresss = target.request().accept(MediaType.APPLICATION_JSON).get(String.class);
+
+		String address = adres(jsonaddresss);
 		for (EventEmployeeRequest eventInvitation : listEventInvitation.getEventEmployeesRequest()) {
 			EventInvitation eventInvitation2 = new EventInvitation();
 			eventInvitation2.setEventId(eventRepository.findById(listEventInvitation.getEventId()).getId());
@@ -65,7 +82,7 @@ public class EventServiceImpl implements EventService {
 			eventInvitation2.setInvCreatedDate(new Date());
 			listOfInvitations.add(eventInvitation2);
 			Employees employees = employeeRepository.findById(eventInvitation2.getEmpId());
-			sendMail(employees.getEmailId());
+			sendMail(employees.getEmailId(), address);
 			sendMessage(employees.getMobileNo());
 		}
 		try {
@@ -104,11 +121,11 @@ public class EventServiceImpl implements EventService {
 		return listEventResponses;
 	}
 
-	public void sendMail(String to) {
+	public void sendMail(String to, String address) {
 		String from = "anshuman.shrivastava@sourcebits.com";
 		String password = "1001013009";
 		String sub = "This is subject";
-		String msg = "This is body";
+		String msg = "Join at " + address;
 		Properties props = new Properties();
 		props.put("mail.smtp.host", "smtp.gmail.com");
 		props.put("mail.smtp.socketFactory.port", "465");
@@ -148,6 +165,34 @@ public class EventServiceImpl implements EventService {
 
 		System.out.println(message.getSid());
 
+	}
+
+	private static URI getBaseURI() {
+		return UriBuilder.fromUri(
+				"https://maps.googleapis.com/maps/api/geocode/json?latlng=32.263200,50.778187&key=AIzaSyAqnoH_s6etqy8140z3t7orPqNuymgJQfs")
+				.build();
+	}
+
+	private static String adres(String jsonaddresss) {
+		try {
+			JSONParser parser = new JSONParser();
+
+			Object obj = parser.parse(jsonaddresss);
+			JSONObject jsonObject = (JSONObject) obj;
+
+			JSONArray msg = (JSONArray) jsonObject.get("results");
+
+			// System.out.println("Message"+msg.get(1)); //Get Second Line Of Result
+
+			JSONObject jobj = (JSONObject) parser.parse(msg.get(1).toString()); // Parsse it
+
+			String perfect_address = jobj.get("formatted_address").toString();
+
+			jsonaddresss = perfect_address;
+		} catch (Exception e) {
+			jsonaddresss = "Error In Address" + e;
+		}
+		return jsonaddresss;
 	}
 
 }

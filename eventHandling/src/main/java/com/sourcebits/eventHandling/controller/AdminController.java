@@ -14,7 +14,7 @@ import com.sourcebits.eventHandling.request.NewEmployeeRequest;
 import com.sourcebits.eventHandling.service.EmployeesService;
 
 @RestController
-@RequestMapping("/secure/rest")
+@RequestMapping(value = "/secure/rest")
 public class AdminController {
 
 	@Autowired

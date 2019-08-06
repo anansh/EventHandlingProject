@@ -60,6 +60,12 @@ public class Role {
 		return roleCreatedBy;
 	}
 
+	@Override
+	public String toString() {
+		return "Role [id=" + id + ", roleName=" + roleName + ", roleCreatedDate=" + roleCreatedDate + ", roleCreatedBy="
+				+ roleCreatedBy + ", roleUpdatedDate=" + roleUpdatedDate + ", roleUpdatedBy=" + roleUpdatedBy + "]";
+	}
+
 	public void setRoleCreatedBy(int roleCreatedBy) {
 		this.roleCreatedBy = roleCreatedBy;
 	}
