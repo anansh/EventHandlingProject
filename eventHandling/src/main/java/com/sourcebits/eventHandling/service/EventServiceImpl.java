@@ -11,19 +11,19 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.mail.*;
 import javax.mail.internet.*;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.mail.Session;
 import javax.mail.Transport;
 import com.sourcebits.eventHandling.constants.ConstantsMessages;
-import com.sourcebits.eventHandling.model.Employees;
 import com.sourcebits.eventHandling.model.Event;
 import com.sourcebits.eventHandling.model.EventInvitation;
+import com.sourcebits.eventHandling.model.User;
 import com.sourcebits.eventHandling.repository.EmployeeRepository;
 import com.sourcebits.eventHandling.repository.EventInvitationRepository;
 import com.sourcebits.eventHandling.repository.EventRepository;
@@ -49,6 +49,9 @@ public class EventServiceImpl implements EventService {
 	@Override
 	@Transactional
 	public Event addEvent(Event event, HttpServletRequest request) {
+		CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
+				.getPrincipal();
+		User user = customUserDetails.getUser();
 		Event event2 = eventRepository.getLastEvent();
 		int lastId = 0;
 		if (null != event2) {
@@ -56,7 +59,7 @@ public class EventServiceImpl implements EventService {
 		}
 		event.setEventId("EVNT-" + (lastId + 1));
 		event.setEventCreatedDate(new Date());
-	//	HttpSession httpSession = request.getSession();
+		event.setEventCreatedBy(Integer.toString(user.getId()));
 		return eventRepository.save(event);
 	}
 
@@ -65,17 +68,20 @@ public class EventServiceImpl implements EventService {
 	public String saveInvitation(EventInvitationRequest listEventInvitation, HttpServletRequest request) {
 		List<EventInvitation> listOfInvitations = new ArrayList<>();
 		Event event = eventRepository.findById(listEventInvitation.getEventId());
-		String address = findAddress(event.getEventVenueLat(), event.getEventVenueLong());
-		System.out.println(address);
+		CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
+				.getPrincipal();
+		User user = customUserDetails.getUser();
+		//String address = findAddress(event.getEventVenueLat(), event.getEventVenueLong());
+		//System.out.println(address);
 
 		for (EventEmployeeRequest eventInvitation : listEventInvitation.getEventEmployeesRequest()) {
 			EventInvitation eventInvitation2 = new EventInvitation();
 			eventInvitation2.setEventId(event.getId());
 			eventInvitation2.setEmpId(eventInvitation.getEmpId());
 			eventInvitation2.setInvCreatedDate(new Date());
+			eventInvitation2.setInvCreatedBy(user.getId());
 			listOfInvitations.add(eventInvitation2);
-			Employees employees = employeeRepository.findById(eventInvitation2.getEmpId());
-			sendMail(employees.getEmailId(), address);
+			sendMail(employeeRepository.findById(eventInvitation2.getEmpId()).getEmailId(), "");
 			// sendMessage(employees.getMobileNo());
 		}
 		try {
@@ -113,9 +119,13 @@ public class EventServiceImpl implements EventService {
 	public String updateInvitation(EventInvitationUpdateReq eventInvitationUpdateReq, HttpServletRequest request) {
 		EventInvitation eventInvitation = eventInvitationRepository
 				.findByEventIdAndEmpId(eventInvitationUpdateReq.getEventId(), eventInvitationUpdateReq.getEmpId());
+		CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
+				.getPrincipal();
+		User user = customUserDetails.getUser();
 		boolean data = eventInvitationUpdateReq.isPropositions();
 		eventInvitation.setPropositions(Boolean.valueOf(data));
 		eventInvitation.setInvUpdatedDate(new Date());
+		eventInvitation.setInvUpdatedBy(user.getId());
 		eventInvitationRepository.save(eventInvitation);
 		return ConstantsMessages.SUCCESSUPDATE;
 	}

@@ -1,7 +1,6 @@
 package com.sourcebits.eventHandling.controller;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +38,7 @@ public class EventController {
 	}
 
 	@GetMapping("/findEventList")
-	public ListEventResponse getListOfEvents() {
+	public ListEventResponse getListOfEvents(HttpServletRequest request) {
 		ListEventResponse listEventResponse = new ListEventResponse();
 		listEventResponse.setEventResponses(eventService.findListOfEvents());
 		return listEventResponse;
