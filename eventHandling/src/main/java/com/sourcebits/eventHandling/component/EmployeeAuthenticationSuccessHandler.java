@@ -23,6 +23,7 @@ public class EmployeeAuthenticationSuccessHandler implements AuthenticationSucce
 	public void onAuthenticationSuccess(HttpServletRequest arg0, HttpServletResponse arg1,
 			Authentication authentication) throws IOException, ServletException {
 
+		
 		boolean hasUserRole = false;
 		boolean hasAdminRole = false;
 		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
@@ -33,7 +34,8 @@ public class EmployeeAuthenticationSuccessHandler implements AuthenticationSucce
 			} else if (grantedAuthority.getAuthority().equals("Admin")) {
 				hasAdminRole = true;
 				break;
-			}
+				
+			} 
 		}
 
 		if (hasUserRole) {
