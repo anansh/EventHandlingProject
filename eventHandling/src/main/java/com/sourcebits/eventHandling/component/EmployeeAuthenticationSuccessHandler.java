@@ -34,7 +34,7 @@ public class EmployeeAuthenticationSuccessHandler implements AuthenticationSucce
 			} else if (grantedAuthority.getAuthority().equals("Admin")) {
 				hasAdminRole = true;
 				break;
-			}
+			} 
 		}
 
 		if (hasUserRole) {
